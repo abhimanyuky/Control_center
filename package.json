@@ -16,9 +16,9 @@
   "license": "MIT",
   "homepage": "https://github.com/test",
   "dependencies": {
+    "cookie-parser": "^1.4.3",
     "express": "^4.16.3",
-    "jsonwebtoken": "^8.2.0",
-    "jwt-express": "^1.1.0"
+    "jsonwebtoken": "^8.2.0"
   },
   "devDependencies": {
     "nodemon": "^1.17.2"
