@@ -26,6 +26,7 @@ var auth = function (req, res, next) {
   })
   next()
 }
+
 app.post('/auth', function (req, res, next) {
 
   if (req.body.username == 'admin' && req.body.password == 'admin') {
