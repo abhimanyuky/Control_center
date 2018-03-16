@@ -18,8 +18,5 @@
   "dependencies": {
     "express": "^4.16.3",
     "jsonwebtoken": "^7.0.0"
-  },
-  "devDependencies": {
-    "request": "^2.60.0"
   }
 }
