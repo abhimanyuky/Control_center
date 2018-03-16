@@ -1,29 +1,63 @@
-var port = process.env.PORT || 1337; // let heroku define port or use 1337
-var http = require('http'); // core node.js http (no frameworks)
-var url = require('url'); // core node.js url (no frameworks)
-var app = require('./lib/helpers'); // auth, token verification & render helpers
-var c = function (res) { /*  */ };
+const express = require('express')
+const app = express()
+const path = require('path')
+const jwt = require('jsonwebtoken')
 
-http.createServer(function (req, res) {
-  var path = url.parse(req.url).pathname;
-  if (path === '/' || path === '/home') {
-    app.home(res);
-  } // homepage
-  else if (path === '/auth') {
-    app.handler(req, res);
-  } // authenticator
-  else if (path === '/private') {
-    app.validate(req, res, app.done);
-  } // private content
-  else if (path === '/logout') {
-    app.logout(req, res, app.done);
-  } // end session
-  else if (path === '/exit') {
-    app.exit(res);
-  } // for testing ONLY
-  else {
-    app.notFound(res);
-  } // 404 error
-}).listen(port);
+const SECRET = "SECRET...."
 
-console.log("Visit: http://127.0.0.1:" + port);
+app.use(express.json()) // to support JSON-encoded bodies
+app.use(express.urlencoded()) // to support URL-encoded bodies
+
+var auth = function (req, res, next) {
+  var token = req.headers['x-access-token'];
+  if (!token) {
+
+    return res.status(401).send({
+      auth: false,
+      message: 'No token provided.'
+    });
+  }
+
+  jwt.verify(token, SECRET, function (err, decoded) {
+    if (err) return res.status(500).send({
+      auth: false,
+      message: 'Failed to authenticate token.'
+    });
+  })
+  next()
+}
+app.post('/auth', function (req, res, next) {
+
+  if (req.body.username == 'admin' && req.body.password == 'admin') {
+    // create a token
+    var token = jwt.sign({
+      id: req.body.username
+    }, SECRET, {
+      expiresIn: 86400 // expires in 24 hours
+    });
+    res.status(200).send({
+      auth: true,
+      token: token
+    });
+  } else {
+    res.sendFile(path.join(__dirname, 'views', 'fail.html'))
+  }
+})
+//
+// app.get('/private', function (req, res, next) {
+//   res.sendFile(path.join(__dirname, 'views', 'index.html'))
+// })
+//
+// app.get('/logout', function (req, res, next) {
+//   res.sendFile(path.join(__dirname, 'views', 'index.html'))
+// })
+
+// app.use('/admin', jwt({
+//   secret: 'secret'
+// })) //check for jwt for all pages under /admin
+
+app.use(express.static('views')) //Send all the static files
+
+app.listen(3000, function () {
+  console.log('Server running on port 3000');
+})

@@ -4,7 +4,7 @@
   "description": "Basic JWT",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "nodemon server.js"
   },
   "repository": {
     "type": "git"
@@ -17,6 +17,10 @@
   "homepage": "https://github.com/test",
   "dependencies": {
     "express": "^4.16.3",
-    "jsonwebtoken": "^7.0.0"
+    "jsonwebtoken": "^8.2.0",
+    "jwt-express": "^1.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.17.2"
   }
 }
